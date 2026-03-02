@@ -11,6 +11,12 @@ This guide covers the installation and setup of ThreadQL.
 - MySQL or MariaDB
 - Slack workspace (for Slack integration)
 
+### For Kubernetes Deployment
+
+- Kubernetes cluster (1.19+)
+- Helm 3.x
+- kubectl configured
+
 ## Installation Steps
 
 ### 1. Clone the Repository
@@ -155,6 +161,140 @@ services:
       - "8091:8091"
     environment:
       - MCP_APP_URL=http://nginx/mcp
+```
+
+## Helm Chart Deployment
+
+ThreadQL includes a Helm chart for Kubernetes deployment. The chart is located in the `helm/conundrum` directory.
+
+### Prerequisites
+
+- Kubernetes cluster (1.19+)
+- Helm 3.x
+- kubectl configured
+
+### Quick Start
+
+```bash
+# Add the repository
+helm repo add threadql https://theirritainer.github.io/conundrum
+
+# Install the chart
+helm install threadql threadql/conundrum --namespace threadql --create-namespace
+
+# Upgrade
+helm upgrade threadql threadql/conundrum
+
+# Uninstall
+helm uninstall threadql --namespace threadql
+```
+
+### Customizing Deployment
+
+Create a values file to customize the deployment:
+
+```yaml
+# values.yaml
+replicaCount: 2
+
+image:
+  repository: theirritainer/conundrum
+  tag: latest
+  pullPolicy: IfNotPresent
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: threadql.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: threadql-tls
+      hosts:
+        - threadql.example.com
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+env:
+  APP_ENV: production
+  APP_DEBUG: "false"
+  DB_CONNECTION: mysql
+  REDIS_HOST: threadql-redis
+```
+
+### Database Configuration
+
+The Helm chart can deploy a MySQL database:
+
+```yaml
+mysql:
+  enabled: true
+  persistence:
+    size: 10Gi
+```
+
+### Redis Configuration
+
+The Helm chart includes Redis for caching and queue management:
+
+```yaml
+redis:
+  enabled: true
+  persistence:
+    size: 5Gi
+```
+
+### Slack Bot Configuration
+
+Configure Slack bot tokens via secrets:
+
+```yaml
+secretEnv:
+  SLACK_BOT_TOKEN: xoxb-your-token
+  SLACK_SIGNING_SECRET: your-secret
+```
+
+### Running Migrations
+
+The chart includes a job for running database migrations:
+
+```bash
+helm upgrade threadql threadql/conundrum --namespace threadql --set migrationJob.enabled=true
+```
+
+### SSH Tunnel for Database
+
+If your database is not directly accessible, deploy an SSH tunnel:
+
+```yaml
+sshTunnel:
+  enabled: true
+  host: bastion.example.com
+  port: 22
+  user: ubuntu
+  databaseHost: internal-db.example.com
+  databasePort: 3306
+```
+
+### Monitoring
+
+The chart supports Prometheus metrics:
+
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
 ```
 
 ## Configuration Options

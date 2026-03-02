@@ -222,6 +222,235 @@ MCP tools implement Slack rate limiting:
 - Query validation
 - Read-only access enforced
 
+## Admin API Endpoints
+
+ThreadQL provides admin API endpoints for managing Slack users and tenant settings.
+
+### Slack Users Management
+
+#### GET /api/admin/slack-users
+
+List all Slack users for the current tenant.
+
+**Authentication**: Requires valid session and admin role
+
+**Response**:
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "slack_user_id": "U1234567890",
+      "slack_workspace_id": "T1234567890",
+      "username": "john.doe",
+      "real_name": "John Doe",
+      "approved": true,
+      "deleted_at": null,
+      "created_at": "2026-02-27T10:00:00Z",
+      "updated_at": "2026-02-27T10:00:00Z"
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "last_page": 1,
+    "per_page": 15,
+    "total": 1
+  }
+}
+```
+
+#### PUT /api/admin/slack-users/{id}
+
+Update a Slack user's approval status.
+
+**Authentication**: Requires valid session and admin role
+
+**Request Body**:
+```json
+{
+  "approved": true
+}
+```
+
+**Response**:
+```json
+{
+  "data": {
+    "id": 1,
+    "slack_user_id": "U1234567890",
+    "slack_workspace_id": "T1234567890",
+    "username": "john.doe",
+    "real_name": "John Doe",
+    "approved": true,
+    "deleted_at": null,
+    "created_at": "2026-02-27T10:00:00Z",
+    "updated_at": "2026-02-28T10:00:00Z"
+  }
+}
+```
+
+#### DELETE /api/admin/slack-users/{id}
+
+Soft delete a Slack user.
+
+**Authentication**: Requires valid session and admin role
+
+**Response**:
+```json
+{
+  "data": {
+    "id": 1,
+    "slack_user_id": "U1234567890",
+    "deleted_at": "2026-03-01T10:00:00Z"
+  }
+}
+```
+
+#### POST /api/admin/slack-users/{id}/restore
+
+Restore a soft-deleted Slack user.
+
+**Authentication**: Requires valid session and admin role
+
+**Response**:
+```json
+{
+  "data": {
+    "id": 1,
+    "slack_user_id": "U1234567890",
+    "deleted_at": null
+  }
+}
+```
+
+### Tenant Settings Management
+
+#### GET /api/admin/tenant-settings
+
+List all tenant settings.
+
+**Authentication**: Requires valid session and admin role
+
+**Response**:
+```json
+{
+  "data": [
+    {
+      "key": "slack.approval_required",
+      "value": "true",
+      "type": "boolean",
+      "description": "Require approval for Slack user queries",
+      "created_at": "2026-02-27T10:00:00Z",
+      "updated_at": "2026-02-27T10:00:00Z"
+    },
+    {
+      "key": "rate_limit.per_user",
+      "value": "100",
+      "type": "integer",
+      "description": "Rate limit per user per hour",
+      "created_at": "2026-02-27T10:00:00Z",
+      "updated_at": "2026-02-27T10:00:00Z"
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "last_page": 1,
+    "per_page": 15,
+    "total": 2
+  }
+}
+```
+
+#### PUT /api/admin/tenant-settings
+
+Update tenant settings in bulk.
+
+**Authentication**: Requires valid session and admin role
+
+**Request Body**:
+```json
+{
+  "settings": {
+    "slack.approval_required": "true",
+    "rate_limit.per_user": "100"
+  }
+}
+```
+
+**Response**:
+```json
+{
+  "data": [
+    {
+      "key": "slack.approval_required",
+      "value": "true",
+      "type": "boolean",
+      "updated_at": "2026-03-01T12:00:00Z"
+    },
+    {
+      "key": "rate_limit.per_user",
+      "value": "100",
+      "type": "integer",
+      "updated_at": "2026-03-01T12:00:00Z"
+    }
+  ]
+}
+```
+
+### Available Tenant Settings Keys
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `slack.approval_required` | boolean | Require approval for Slack user queries |
+| `rate_limit.per_user` | integer | Rate limit per user per hour |
+| `rate_limit.per_channel` | integer | Rate limit per channel per hour |
+| `query.max_rows` | integer | Maximum rows returned per query |
+| `query.timeout_seconds` | integer | Query timeout in seconds |
+| `csv.export_enabled` | boolean | Enable CSV export feature |
+| `mcp.enabled` | boolean | Enable MCP tools |
+
+## Error Responses
+
+### 401 Unauthorized
+
+```json
+{
+  "message": "Unauthenticated.",
+  "exception": "Illuminate\\Auth\\AuthenticationException"
+}
+```
+
+### 403 Forbidden
+
+```json
+{
+  "message": "You do not have permission to perform this action.",
+  "exception": "Symfony\\Component\\HttpKernel\\Exception\\AccessDeniedHttpException"
+}
+```
+
+### 404 Not Found
+
+```json
+{
+  "message": "No query results could be found.",
+  "exception": "Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException"
+}
+```
+
+### 422 Validation Error
+
+```json
+{
+  "message": "The given data was invalid.",
+  "errors": {
+    "approved": [
+      "The approved field must be true or false."
+    ]
+  }
+}
+```
+
 ## Performance
 
 ### Response Times

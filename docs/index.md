@@ -14,6 +14,7 @@ ThreadQL is a Laravel-based application that allows users to interact with datab
 - **MCP Tools**: Model Context Protocol tools for AI integration
 - **CSV Export**: Export query results to CSV files
 - **Security**: Internal network restriction and query validation
+- **Kubernetes Deployment**: Helm chart for K8s deployments
 
 ## Quick Start
 
