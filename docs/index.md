@@ -26,20 +26,17 @@ To get started with ThreadQL:
 
 ## Documentation Structure
 
-- **[Installation](/threadql/installation)**: Setup and configuration guides
-- **[API Reference](/threadql/api)**: HTTP API documentation
-- **[MCP Tools](/threadql/mcp-tools)**: Model Context Protocol tool documentation
-- **[Examples](/threadql/examples)**: Usage examples and tutorials
-- **[Reference](/threadql/reference)**: Security, troubleshooting, and migration guides
-- **[Contributing](/threadql/contributing)**: Development and contribution guidelines
+- **[Installation](/installation/)**: Setup and configuration guides
+- **[API Reference](/api/)**: HTTP API documentation
+- **[MCP Tools](/mcp-tools/)**: Model Context Protocol tool documentation
 
 ## Getting Help
 
 If you need assistance:
 
-- Check the [Troubleshooting](/threadql/reference/troubleshooting) guide
-- Review the [Security](/threadql/reference/security) documentation
-- Visit the [Community](/threadql/contributing/community) section
+- Review the [Installation](/installation/) guide
+- Check the [API Reference](/api/) documentation
+- Read the [MCP Tools](/mcp-tools/) documentation
 - Report issues in the GitHub repository
 
 ## Version

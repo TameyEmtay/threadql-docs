@@ -35,7 +35,7 @@ cp .env.example .env
 
 Edit `.env` with your configuration:
 
-```env
+```bash
 APP_NAME=Laravel
 APP_ENV=local
 APP_KEY=your_app_key
@@ -223,4 +223,4 @@ php artisan queue:failed
 
 ---
 
-For more information, see the [Quick Start Guide](/threadql/quick-start) or [Configuration](/threadql/configuration).
+For more information, see the [API Reference](/api/) or [MCP Tools](/mcp-tools/).

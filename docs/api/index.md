@@ -270,4 +270,4 @@ MCP tools implement Slack rate limiting:
 
 ---
 
-For more information, see the [MCP Tools](/threadql/mcp-tools) or [Examples](/threadql/examples).
+For more information, see the [MCP Tools](/mcp-tools/) or [Installation](/installation/).

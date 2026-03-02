@@ -354,4 +354,4 @@ $tools = $mcp->listTools();
 
 ---
 
-For more information, see the [API Reference](/threadql/api) or [Examples](/threadql/examples).
+For more information, see the [API Reference](/api/) or [Installation](/installation/).
